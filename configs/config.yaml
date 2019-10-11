@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  run_mode: debug
+  logpath: /Users/finup/GoglandProjects/awesomeProject/src/harbor_tools
+  logname: harborapi.log
+
+harbor:
+  addr: https://harbor-test.finupgroup.com
+  user: admin
+  password: Harbortest12345
