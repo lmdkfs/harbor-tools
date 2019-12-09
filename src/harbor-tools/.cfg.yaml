@@ -5,12 +5,12 @@ server:
   logname: harborapi.log
 
 harbor:
-  addr: https://harbor-5.finupgroup.com
+  addr: https://xxx.finupgroup.com
   user: admin
-  password: Harbortest12345
+  password: xxxx
 
 target:
-  addr: https://harbor-6.finupgroup.com
+  addr: https://harbor-target.com
   user: admin
   password: Harbortest12345
 
@@ -23,7 +23,7 @@ db:
 
 harbordb:
   name: registry
-  host: 192.168.197.9
+  host: 127.0.0.1
   user: harbor
-  password: En3rYCNk
+  password: 
   port: 5432
