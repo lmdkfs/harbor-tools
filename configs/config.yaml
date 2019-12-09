@@ -5,6 +5,6 @@ server:
   logname: harborapi.log
 
 harbor:
-  addr: https://harbor-test.finupgroup.com
+  addr: https://harbor-host
   user: admin
-  password: Harbortest12345
+  password: pwd
