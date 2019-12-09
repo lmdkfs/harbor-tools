@@ -2,79 +2,57 @@ package config
 
 import (
 	"fmt"
-	"strings"
+	"sync"
 	"time"
-
-	"github.com/spf13/viper"
 )
 
 var (
 	global *Config
+	once   sync.Once
 )
 
 type Config struct {
-	RunMode     string
-	Store       string
-	Swagger     string
-	Log         Log
-	LogGormHook LogGormHook
-	HTTP        HTTP
-	Gorm        Gorm
-	Postgres    Postgres
-	Harbor      Harbor
-	Ldap        Ldap
+	RunMode        string
+	Store          string
+	Swagger        string
+	Log            Log
+	LogGormHook    LogGormHook
+	HTTP           HTTP
+	Gorm           Gorm
+	Postgres       Postgres
+	HarborPostgres Postgres
+	Harbor         Harbor
+	TargetHarbor   TargetHarbor
+	Ldap           Ldap
+	Goroutines     Goroutines
+	Sync           Sync
+	File           string
 }
 
-func GetGlobalConfig() *Config {
-	if global == nil {
-		return &Config{}
-	}
+func NewConfig() *Config {
+	once.Do(func() {
+		global = &Config{}
+	})
+
 	return global
 }
 
-func NewGlobalConfig(ConfigPath string) (*Config, error) {
-	vp := viper.New()
-	vp.SetEnvPrefix("harbortools")                      // 环境变量前缀, 环境变量必须大写
-	vp.SetEnvKeyReplacer(strings.NewReplacer(".", "_")) // 为了兼容读取yaml文件
-	vp.AutomaticEnv()
-
-	// load config from yaml
-	fmt.Println("configpath", ConfigPath)
-	vp.AddConfigPath(ConfigPath)
-	vp.SetConfigName("config")
-	vp.SetConfigType("yaml")
-	if err := vp.ReadInConfig(); err != nil {
-		return &Config{}, err
-	}
-	fmt.Println(">>>>>>>>",vp.ConfigFileUsed())
-
-	// LoadServer
-	//fmt.Println(vp.GetString("server.run_mode"))
-	//fmt.Println(vp.GetInt("server.port"))
-	global = new(Config)
-	global.HTTP.Port = vp.GetInt("server.port")
-	global.RunMode = vp.GetString("server.run_mode")
-	global.Log.LogPath = vp.GetString("server.logpath")
-	global.Log.LogName = vp.GetString("server.logname")
-
-	// LoadHarbor
-	global.Harbor.Addr = vp.GetString("harbor.addr")
-	global.Harbor.User = vp.GetString("harbor.user")
-	global.Harbor.Password = vp.GetString("harbor.password")
-
-	// LoadLdap
-
-	global.Ldap.Addr = vp.GetString("ldap.addr")
-	global.Ldap.Dn = vp.GetString("ldap.dn")
-	global.Ldap.BaseDn = vp.GetString("ldap.basedn")
-	global.Ldap.Password = vp.GetString("ldap.password")
-	global.Ldap.Uid = vp.GetString("ldap.uid")
-
-	return global, nil
-
+type Sync struct {
+	Manual bool
+}
+type Goroutines struct {
+	TagWorkers  int
+	DBWorkers   int
+	PullWorkers int
+	PushWorkers int
+}
+type Harbor struct {
+	Addr     string
+	User     string
+	Password string
 }
 
-type Harbor struct {
+type TargetHarbor struct {
 	Addr     string
 	User     string
 	Password string
@@ -156,7 +134,7 @@ type Postgres struct {
 
 // DSN 数据库连接串
 func (pg Postgres) DSN() string {
-	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 		pg.Host, pg.Port, pg.User, pg.DBName, pg.Password)
 }
 

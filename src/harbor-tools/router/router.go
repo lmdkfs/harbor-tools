@@ -11,9 +11,11 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	v1 := router.Group("v1")
+	apiV1 := router.Group("v1")
 	{
-		v1.GET("/test", controllers.Test)
+		apiV1.GET("/test", controllers.Test)
+		apiV1.POST("/tags", )
+		//v1.GET()
 	}
 	return router
 }

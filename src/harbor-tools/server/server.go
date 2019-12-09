@@ -6,7 +6,8 @@ import (
 	"harbor-tools/harbor-tools/router"
 )
 
-func NewServer(cfg *config.Config) func() {
+func NewServer() func() {
+	cfg := config.NewConfig()
 	return func() {
 		addr := fmt.Sprintf("%s:%d", cfg.HTTP.Host, cfg.HTTP.Port)
 		GinServer := router.NewRouter()

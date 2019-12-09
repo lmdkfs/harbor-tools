@@ -1,0 +1,29 @@
+server:
+  port: 8081
+  run_mode: debug
+  logpath: /Users/finup/GoglandProjects/awesomeProject/src/harbor_tools
+  logname: harborapi.log
+
+harbor:
+  addr: https://harbor-5.finupgroup.com
+  user: admin
+  password: Harbortest12345
+
+target:
+  addr: https://harbor-6.finupgroup.com
+  user: admin
+  password: Harbortest12345
+
+db:
+  name: harbor_tools
+  host: 127.0.0.1
+  user: richie
+  password: zrqzrq
+  port: 5432
+
+harbordb:
+  name: registry
+  host: 192.168.197.9
+  user: harbor
+  password: En3rYCNk
+  port: 5432
